@@ -1,0 +1,88 @@
+/* Global */
+:root {
+	--primary-color: #500000;
+	--secondary-color: #b84000;
+	--tertiary-color: #fb7a36;
+}
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 6.25%;
+}
+
+body {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: 16rem;
+	color: white;
+	background-color: var(--primary-color);
+}
+
+/* Game */
+.game-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 18px;
+	width: 100vw;
+	height: 100vh;
+	padding: 16px 0;
+}
+
+.game-container > * {
+	width: 90%;
+	max-width: 900px;
+}
+
+/* HUD */
+.hud__game-title {
+	text-align: center;
+}
+
+.hud__game-info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 22px;
+}
+
+.hud__game-info p {
+	font-size: 16rem;
+}
+
+/* Canvas */
+canvas {
+	flex-grow: 1;
+	background-color: var(--secondary-color);
+	border: 4px solid var(--tertiary-color);
+	border-radius: 8px;
+}
+
+.button-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+}
+
+.control-button {
+	width: 100px;
+	min-width: 100px;
+	padding: 5px 20px;
+	color: inherit;
+	font-family: inherit;
+	font-size: inherit;
+	background-color: var(--secondary-color);
+	border: 1px solid var(--tertiary-color);
+	border-radius: 8px;
+}
+
+.up-button,
+.down-button {
+	margin: 0 100%;
+}
