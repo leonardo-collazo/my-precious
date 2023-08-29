@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Bombshell</title>
+
+		<link rel="stylesheet" href="./css/mobile.css" />
+		<link rel="stylesheet" href="./css/tablet.css" />
+	</head>
+	<body>
+		<main class="game-container">
+			<div class="hud">
+				<h1 class="hud__game-title">Bombshell</h1>
+
+				<div class="hud__game-info">
+					<p id="lifes">Lifes</p>
+					<p id="time">Time</p>
+					<p id="record">Record</p>
+				</div>
+			</div>
+
+			<canvas id="game-board"></canvas>
+
+			<div class="button-container">
+				<button id="up-button" class="up-button control-button">Up</button>
+				<button id="left-button" class="control-button">Left</button>
+				<button id="right-button" class="control-button">Right</button>
+				<button id="down-button" class="down-button control-button">
+					Down
+				</button>
+			</div>
+		</main>
+
+		<script src="./js/maps.js"></script>
+		<script src="./js/game.js"></script>
+	</body>
+</html>
