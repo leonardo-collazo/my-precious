@@ -36,15 +36,15 @@ function getPositionInCanvas(col, row) {
 	return {
 		x:
 			// Initial x-position to render an element
-			elementSize * col +
+			elementSize * (col - 1) +
 			// Space between columns
-			col * canvasSize * 0.02,
+			(col - 1) * canvasSize * 0.02,
 
 		y:
 			// Initial y-position to render an element
-			elementSize * (row + 1) +
+			elementSize * row +
 			// Space between rows
-			(row + 1) * canvasSize * 0.02 -
+			row * canvasSize * 0.02 -
 			// Space between canvas top and elements
 			canvasSize * 0.018,
 	};
@@ -71,12 +71,23 @@ function getMap(level) {
  * If negative it moves down, otherwise, it moves up.
  */
 function movePlayer(cols, rows) {
-	playerPos.col += cols;
-	playerPos.row += rows;
+	const currentPLayerPos = getPositionInCanvas(playerPos.col, playerPos.row);
 
-	const posInCanvas = getPositionInCanvas(playerPos.col, playerPos.row);
-	const newX = posInCanvas.x;
-	const newY = posInCanvas.y;
+	// Responsive player movement
+	// Offset and resize to fit the player's size
+	game.clearRect(
+		currentPLayerPos.x + canvasSize * 0.01,
+		currentPLayerPos.y - canvasSize * 0.075,
+		elementSize * 1.15,
+		elementSize * 1.18
+	);
+
+	playerPos.col = Math.min(Math.max(playerPos.col + cols, 1), 10);
+	playerPos.row = Math.min(Math.max(playerPos.row + rows, 1), 10);
+
+	const newPlayerPos = getPositionInCanvas(playerPos.col, playerPos.row);
+	const newX = newPlayerPos.x;
+	const newY = newPlayerPos.y;
 
 	game.fillText(emojis['P'], newX, newY);
 }
@@ -90,22 +101,16 @@ function movePlayerByKey(keyCode) {
 
 function renderMap(level) {
 	const map = getMap(level);
-
 	let posInCanvas = undefined;
-	let x = undefined;
-	let y = undefined;
 
 	map.forEach((arr, row) => {
 		arr.forEach((element, col) => {
-			posInCanvas = getPositionInCanvas(col, row);
-			x = posInCanvas.x;
-			y = posInCanvas.y;
-
-			game.fillText(emojis[element], x, y);
+			posInCanvas = getPositionInCanvas(col + 1, row + 1);
+			game.fillText(emojis[element], posInCanvas.x, posInCanvas.y);
 
 			if (element == 'P') {
-				playerPos.col = col;
-				playerPos.row = row;
+				playerPos.col = col + 1;
+				playerPos.row = row + 1;
 			}
 		});
 	});
@@ -125,7 +130,7 @@ function resizeAll() {
 	// Button container with same width as canvas
 	btnContainer.setAttribute('style', `width: ${canvasSize}px`);
 
-	// 10x10 tile map
+	// Element size needed to fit on a 10x10 tile map
 	elementSize = canvasSize / 12.65;
 	game.font = elementSize + 'px Verdana';
 }
