@@ -5,30 +5,30 @@
 
 const emojis = {
 	'-': ' ',
-	O: 'ðŸšª',
-	X: 'ðŸ’£',
-	I: 'ðŸŽ',
-	PLAYER: 'ðŸ’€',
-	BOMB_COLLISION: 'ðŸ”¥',
-	GAME_OVER: 'ðŸ‘Ž',
-	WIN: 'ðŸ†',
+	P: '🐺',
+	G: '🍖',
+	D: '💣',
+	X: '🌳',
+	BOMB_COLLISION: '🔥',
+	GAME_OVER: '😞',
+	WIN: '😋',
 };
 
 const maps = [];
 maps.push(`
-  IXXXXXXXXX
+  GXXXXXXXXX
+  -XXXXXXXXX
+  -DXXXXXXXX
+  --DXXXXXXX
+  D-XXXXXXXX
+  D-XXXXXXXX
+  --DXXXXXXX
   -XXXXXXXXX
   -XXXXXXXXX
-  -XXXXXXXXX
-  -XXXXXXXXX
-  -XXXXXXXXX
-  -XXXXXXXXX
-  -XXXXXXXXX
-  -XXXXXXXXX
-  OXXXXXXXXX
+  PXXXXXXXXX
 `);
 maps.push(`
-  O--XXXXXXX
+  P--XXXXXXX
   X--XXXXXXX
   XX----XXXX
   X--XX-XXXX
@@ -36,11 +36,11 @@ maps.push(`
   X-XXXX-XXX
   XX--XX--XX
   XX--XXX-XX
-  XXXX---IXX
+  XXXX---GXX
   XXXXXXXXXX
   `);
 maps.push(`
-  I-----XXXX
+  G-----XXXX
   XXXXX-XXXX
   XX----XXXX
   XX-XXXXXXX
@@ -48,6 +48,6 @@ maps.push(`
   XXXXXX-XXX
   XX-----XXX
   XX-XXXXXXX
-  XX-----OXX
+  XX-----PXX
   XXXXXXXXXX
 `);
