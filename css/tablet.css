@@ -1,9 +1,5 @@
 /* Media queries */
-@media (min-width: 500px) {
-	.game-container {
-		padding: 24px 0;
-	}
-
+@media (min-width: 426px) {
 	.hud__game-info {
 		justify-content: space-evenly;
 	}
@@ -13,8 +9,7 @@
 	}
 
 	.control-button {
-		width: 22.5%;
-		max-width: 200px;
+		flex-grow: 1;
 	}
 
 	.up-button,
