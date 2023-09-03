@@ -69,9 +69,9 @@ function clearElement(col, row) {
 	// Responsive player movement
 	// Offset and resize to fit the player's size
 	ctx.clearRect(
-		elementPos.x + canvasSize * 0.0095,
+		elementPos.x - canvasSize * 0.0002,
 		elementPos.y - canvasSize * 0.075,
-		elementSize * 1.15,
+		elementSize * 1.28,
 		elementSize * 1.18
 	);
 }
@@ -184,7 +184,7 @@ function movePlayer(cols, rows) {
 	const newY = newPlayerPos.y;
 
 	// Render player in new position
-	ctx.fillText(emojis['P'], newX, newY);
+	ctx.fillText(emojisPerLevel[currentLevel - 1]['P'], newX, newY);
 }
 
 function movePlayerByKey(keyCode) {
@@ -235,7 +235,7 @@ function renderMap(level) {
 	currentMap.forEach((arr, row) => {
 		arr.forEach((element, col) => {
 			posInMap = getPositionInMap(col, row);
-			ctx.fillText(emojis[element], posInMap.x, posInMap.y);
+			ctx.fillText(emojisPerLevel[level - 1][element], posInMap.x, posInMap.y);
 
 			if (element == 'P') {
 				setPlayerStartingPos(col, row);
@@ -256,7 +256,11 @@ function resetLevel() {
 	clearElement(playerCurrentPos.col, playerCurrentPos.row);
 
 	// Render player in his starting position
-	ctx.fillText(emojis['P'], newPlayerPos.x, newPlayerPos.y);
+	ctx.fillText(
+		emojisPerLevel[currentLevel - 1]['P'],
+		newPlayerPos.x,
+		newPlayerPos.y
+	);
 
 	// Update player's current position
 	setPlayerCurrentPos(playerStartingPos.col, playerStartingPos.row);
