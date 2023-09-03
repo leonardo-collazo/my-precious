@@ -1,9 +1,5 @@
 /* Media queries */
 @media (min-width: 426px) {
-	.hud__game-info {
-		justify-content: space-evenly;
-	}
-
 	.button-container {
 		justify-content: space-between;
 	}
