@@ -3,18 +3,30 @@
 //***************************
 const hud = document.querySelector('.hud');
 const livesP = document.querySelector('#lives');
+const timeP = document.querySelector('#time');
+const recordP = document.querySelector('#record');
+
 const canvas = document.querySelector('#game-board');
 const ctx = canvas.getContext('2d');
+
 const btnContainer = document.querySelector('.button-container');
 const btnUp = document.querySelector('#up-button');
 const btnLeft = document.querySelector('#left-button');
 const btnRight = document.querySelector('#right-button');
 const btnDown = document.querySelector('#down-button');
 
-let canvasSize = 0;
-let elementSize = 0;
-let currentLevel = 1;
-let lives = 3;
+const recordKeyName = 'record';
+
+let canvasSize = undefined;
+let elementSize = undefined;
+let startingLevel = 1;
+let currentLevel = startingLevel;
+let maxLives = 3;
+let lives = maxLives;
+let startingTime = undefined;
+let time = 0;
+let timeInterval = undefined;
+let record = 0;
 
 // 10x10 tile map
 let currentMap = undefined;
@@ -25,12 +37,15 @@ const playerStartingPos = {
 	row: undefined,
 };
 
-// Player position (column and row)
-const playerPos = {
+// Player's current position (column and row)
+const playerCurrentPos = {
 	col: undefined,
 	row: undefined,
 };
 
+//***************************
+//*  EVENTS
+//***************************
 window.addEventListener('load', startGame);
 window.addEventListener('resize', () => {
 	resizeAll();
@@ -40,10 +55,10 @@ window.addEventListener('keydown', (event) => {
 	movePlayerByKey(event.code);
 });
 
-btnUp.addEventListener('click', () => movePlayer(0, -1));
-btnLeft.addEventListener('click', () => movePlayer(-1, 0));
-btnRight.addEventListener('click', () => movePlayer(1, 0));
-btnDown.addEventListener('click', () => movePlayer(0, 1));
+btnUp.addEventListener('click', () => managePlayerMovement(0, -1));
+btnLeft.addEventListener('click', () => managePlayerMovement(-1, 0));
+btnRight.addEventListener('click', () => managePlayerMovement(1, 0));
+btnDown.addEventListener('click', () => managePlayerMovement(0, 1));
 
 //***************************
 //*  FUNCTIONS
@@ -58,6 +73,23 @@ function clearElement(col, row) {
 		elementPos.y - canvasSize * 0.075,
 		elementSize * 1.15,
 		elementSize * 1.18
+	);
+}
+
+function convertMilisecondsToSeconds(miliseconds) {
+	return miliseconds / 1000;
+}
+
+function getMap(level) {
+	// Get the map corresponding to the level
+	return (
+		maps[level - 1]
+			// Remove spaces
+			.trim()
+			// Get rows with elements
+			.split('\n')
+			// Remove spaces and get elements individually
+			.map((row) => row.trim().split(''))
 	);
 }
 
@@ -79,17 +111,8 @@ function getPositionInMap(col, row) {
 	};
 }
 
-function getMap(level) {
-	// Get the map corresponding to the level
-	return (
-		maps[level - 1]
-			// Remove spaces
-			.trim()
-			// Get rows with elements
-			.split('\n')
-			// Remove spaces and get elements individually
-			.map((row) => row.trim().split(''))
-	);
+function isFinalLevel() {
+	return currentLevel == maps.length;
 }
 
 function isInsideMap(col, row) {
@@ -101,19 +124,34 @@ function isInsideMap(col, row) {
 	);
 }
 
+function loadNextLevel() {
+	currentLevel += 1;
+	startGame();
+}
+
+function loadRecord() {
+	// Load record from local storage
+	const savedRecord = parseFloat(localStorage.getItem(recordKeyName));
+
+	// If there is no record then set it to zero
+	if (!savedRecord) {
+		setRecord(0);
+	} else {
+		setRecord(savedRecord);
+	}
+}
+
 function managePlayerMovement(cols, rows) {
 	const newPlayerPos = {
-		col: playerPos.col + cols,
-		row: playerPos.row + rows,
+		col: playerCurrentPos.col + cols,
+		row: playerCurrentPos.row + rows,
 	};
 
 	if (isInsideMap(newPlayerPos.col, newPlayerPos.row)) {
 		if (currentMap[newPlayerPos.row][newPlayerPos.col] == 'D') {
-			lives -= 1;
-			resetLevel();
+			processPlayerFailure();
 		} else if (currentMap[newPlayerPos.row][newPlayerPos.col] == 'G') {
-			currentLevel += 1;
-			startGame();
+			processVictory();
 		} else if (currentMap[newPlayerPos.row][newPlayerPos.col] != 'X') {
 			movePlayer(cols, rows);
 		}
@@ -129,13 +167,19 @@ function managePlayerMovement(cols, rows) {
  */
 function movePlayer(cols, rows) {
 	// Clear player
-	clearElement(playerPos.col, playerPos.row);
+	clearElement(playerCurrentPos.col, playerCurrentPos.row);
 
-	playerPos.col = Math.min(Math.max(playerPos.col + cols, 0), 9);
-	playerPos.row = Math.min(Math.max(playerPos.row + rows, 0), 9);
+	// Update player's current position
+	setPlayerCurrentPos(
+		Math.min(Math.max(playerCurrentPos.col + cols, 0), 9),
+		Math.min(Math.max(playerCurrentPos.row + rows, 0), 9)
+	);
 
 	// Get new player position
-	const newPlayerPos = getPositionInMap(playerPos.col, playerPos.row);
+	const newPlayerPos = getPositionInMap(
+		playerCurrentPos.col,
+		playerCurrentPos.row
+	);
 	const newX = newPlayerPos.x;
 	const newY = newPlayerPos.y;
 
@@ -153,6 +197,37 @@ function movePlayerByKey(keyCode) {
 		managePlayerMovement(0, 1);
 }
 
+function processPlayerFailure() {
+	setLives(lives - 1);
+
+	if (lives > 0) {
+		resetLevel();
+	} else {
+		currentLevel = startingLevel;
+		lives = maxLives;
+
+		stopUpdatingTime();
+		startGame();
+	}
+}
+
+function processVictory() {
+	if (isFinalLevel()) {
+		if (!record) {
+			setRecord(time);
+			localStorage.setItem(recordKeyName, time);
+		} else {
+			const newRecord = Math.min(time, record);
+			setRecord(newRecord);
+			localStorage.setItem(recordKeyName, newRecord);
+		}
+
+		stopUpdatingTime();
+	} else {
+		loadNextLevel();
+	}
+}
+
 function renderMap(level) {
 	currentMap = getMap(level);
 	let posInMap = undefined;
@@ -163,10 +238,8 @@ function renderMap(level) {
 			ctx.fillText(emojis[element], posInMap.x, posInMap.y);
 
 			if (element == 'P') {
-				playerStartingPos.col = col;
-				playerStartingPos.row = row;
-				playerPos.col = col;
-				playerPos.row = row;
+				setPlayerStartingPos(col, row);
+				setPlayerCurrentPos(col, row);
 			}
 		});
 	});
@@ -180,17 +253,13 @@ function resetLevel() {
 	);
 
 	// Clear player in his current position
-	clearElement(playerPos.col, playerPos.row);
+	clearElement(playerCurrentPos.col, playerCurrentPos.row);
 
 	// Render player in his starting position
 	ctx.fillText(emojis['P'], newPlayerPos.x, newPlayerPos.y);
 
-	// Update lives
-	updateLives();
-
 	// Update player's current position
-	playerPos.col = playerStartingPos.col;
-	playerPos.row = playerStartingPos.row;
+	setPlayerCurrentPos(playerStartingPos.col, playerStartingPos.row);
 }
 
 function resizeAll() {
@@ -212,12 +281,61 @@ function resizeAll() {
 	ctx.font = elementSize + 'px Verdana';
 }
 
+function setLives(amount) {
+	lives = amount;
+
+	const redHeartAmount = lives;
+	const brokenHeartAmount = maxLives - lives;
+
+	livesP.innerText = '';
+	livesP.innerText += ` ${emojis.HEART} `.repeat(redHeartAmount);
+	livesP.innerText += ` ${emojis.BROKEN_HEART} `.repeat(brokenHeartAmount);
+}
+
+function setPlayerCurrentPos(col, row) {
+	playerCurrentPos.col = col;
+	playerCurrentPos.row = row;
+}
+
+function setPlayerStartingPos(col, row) {
+	playerStartingPos.col = col;
+	playerStartingPos.row = row;
+}
+
+function setRecord(amount) {
+	record = amount;
+	recordP.innerText = `${emojis.RECORD}${record.toFixed(2)}s`;
+}
+
+function setTime(amount) {
+	time = amount;
+	timeP.innerText = `${emojis.TIME}${time.toFixed(2)}s`;
+}
+
 function startGame() {
 	resizeAll();
 	renderMap(currentLevel);
-	updateLives();
+	setLives(lives);
+	loadRecord();
+
+	// Start running time
+	if (!startingTime) {
+		startUpdatingTime();
+	}
 }
 
-function updateLives() {
-	livesP.innerText = `Lives: ${lives}`;
+function startUpdatingTime() {
+	startingTime = Date.now();
+	timeInterval = setInterval(updateElapsedTime, 10);
+}
+
+function stopUpdatingTime() {
+	clearInterval(timeInterval);
+	timeInterval = undefined;
+	startingTime = undefined;
+}
+
+function updateElapsedTime() {
+	const elapsedTime = Date.now() - startingTime;
+	setTime(convertMilisecondsToSeconds(elapsedTime));
 }
