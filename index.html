@@ -7,29 +7,107 @@
 
 		<link rel="stylesheet" href="./css/mobile.css" />
 		<link rel="stylesheet" href="./css/tablet.css" />
+		<link rel="shortcut icon" href="./icons/favicon.png" type="image/x-icon" />
 	</head>
 	<body>
-		<main class="game-container">
-			<div class="hud">
-				<h1 class="hud__game-title">My Precious</h1>
+		<main>
+			<section class="landscape">
+				<p>Rotate the device, please!</p>
+			</section>
 
-				<div class="hud__game-info">
-					<p id="lives">Lives</p>
-					<p id="time">Time</p>
-					<p id="record">Record</p>
-				</div>
-			</div>
-
-			<canvas id="game-board"></canvas>
-
-			<div class="button-container">
-				<button id="up-button" class="up-button control-button">Up</button>
-				<button id="left-button" class="control-button">Left</button>
-				<button id="right-button" class="control-button">Right</button>
-				<button id="down-button" class="down-button control-button">
-					Down
+			<section id="main-menu" class="main-menu">
+				<h1 class="menu-title orange-background">My Precious</h1>
+				<p class="main-menu__info orange-background">
+					Hi! 😀 This is my first videogame with HTML, CSS and JavaScript.<br />
+					You must get the precious as fast as you can and, most importantly,
+					enjoy it!<br />
+					Don't rotate the device!<br />
+					<br />
+					Controls:<br />
+					W or ⬆: Move up<br />
+					A or ⬅: Move left<br />
+					S or ⬇: Move down<br />
+					D or ➡: Move right
+				</p>
+				<button
+					id="main-menu__button"
+					class="button menu-button orange-background"
+				>
+					Start!
 				</button>
-			</div>
+			</section>
+
+			<section id="game-container" class="game-container">
+				<div id="hud" class="hud">
+					<h1 class="hud__game-title orange-background">My Precious</h1>
+
+					<div class="hud__game-info">
+						<p id="lives"></p>
+						<p id="time"></p>
+						<p id="record"></p>
+					</div>
+				</div>
+
+				<canvas id="game-board" class="orange-background"></canvas>
+
+				<div id="button-container" class="button-container">
+					<button
+						id="up-button"
+						class="button up-button control-button orange-background"
+					>
+						Up
+					</button>
+					<button
+						id="left-button"
+						class="button control-button orange-background"
+					>
+						Left
+					</button>
+					<button
+						id="right-button"
+						class="button control-button orange-background"
+					>
+						Right
+					</button>
+					<button
+						id="down-button"
+						class="button down-button control-button orange-background"
+					>
+						Down
+					</button>
+				</div>
+			</section>
+
+			<section id="winner-menu" class="final-menu winner-menu">
+				<h1 class="menu-title orange-background">My Precious</h1>
+				<p class="final-menu__info orange-background">
+					🏆 CONGRATULATIONS! 🏆 <br />
+					YOU WIN!
+					<br />
+					<br />
+					<span id="winner-menu__record"></span>
+				</p>
+				<button
+					id="winner-menu__button"
+					class="button menu-button orange-background"
+				>
+					Play again!
+				</button>
+			</section>
+
+			<section id="game-over-menu" class="final-menu">
+				<h1 class="menu-title orange-background">My Precious</h1>
+				<p class="final-menu__info orange-background">
+					😞 SORRY! 😞 <br />
+					YOU LOSE!
+				</p>
+				<button
+					id="game-over-menu__button"
+					class="button menu-button orange-background"
+				>
+					Play again!
+				</button>
+			</section>
 		</main>
 
 		<script src="./js/maps.js"></script>
