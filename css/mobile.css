@@ -69,7 +69,7 @@ body {
 }
 
 .game-area {
-	margin-top: calc(86px - 17.5vw);
+	margin-top: calc(120px - 24vw);
 }
 
 .hud__game-info #lives {
@@ -93,7 +93,7 @@ canvas {
 	justify-content: center;
 	align-items: center;
 	gap: 14px;
-	margin-top: calc(86px - 17.5vw);
+	margin-top: calc(120px - 24vw);
 }
 
 .button {
