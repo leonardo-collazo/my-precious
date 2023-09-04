@@ -89,7 +89,7 @@ canvas {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-items: center;
-	gap: 12px;
+	gap: 14px;
 	margin-top: 12px;
 }
 
@@ -101,8 +101,8 @@ canvas {
 }
 
 .control-button {
-	min-width: 100px;
-	padding: 6px 20px;
+	min-width: 125px;
+	padding: 8px 20px;
 }
 
 .control-button:hover {

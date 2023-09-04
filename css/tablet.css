@@ -2,10 +2,13 @@
 @media (min-width: 426px) {
 	.button-container {
 		justify-content: center;
+		gap: 12px;
 	}
 
 	.control-button {
+		min-width: 100px;
 		flex-grow: 1;
+		padding: 6px 0;
 	}
 
 	.up-button,
