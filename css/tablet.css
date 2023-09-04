@@ -1,7 +1,7 @@
 /* Media queries */
 @media (min-width: 426px) {
 	.button-container {
-		justify-content: space-between;
+		justify-content: center;
 	}
 
 	.control-button {
