@@ -1,7 +1,13 @@
 //***************************
 //*  VARIABLES
 //***************************
-const hud = document.querySelector('.hud');
+const mainMenu = document.querySelector('#main-menu');
+const gameContainer = document.querySelector('#game-container');
+const winnerMenu = document.querySelector('#winner-menu');
+const gameOverMenu = document.querySelector('#game-over-menu');
+const winnerMenuRecord = document.querySelector('#winner-menu__record');
+
+const hud = document.querySelector('#hud');
 const livesP = document.querySelector('#lives');
 const timeP = document.querySelector('#time');
 const recordP = document.querySelector('#record');
@@ -9,7 +15,10 @@ const recordP = document.querySelector('#record');
 const canvas = document.querySelector('#game-board');
 const ctx = canvas.getContext('2d');
 
-const btnContainer = document.querySelector('.button-container');
+const btnMainMenu = document.querySelector('#main-menu__button');
+const btnWinnerMenu = document.querySelector('#winner-menu__button');
+const btnGameOverMenu = document.querySelector('#game-over-menu__button');
+const btnContainer = document.querySelector('#button-container');
 const btnUp = document.querySelector('#up-button');
 const btnLeft = document.querySelector('#left-button');
 const btnRight = document.querySelector('#right-button');
@@ -46,13 +55,28 @@ const playerCurrentPos = {
 //***************************
 //*  EVENTS
 //***************************
-window.addEventListener('load', startGame);
+// window.addEventListener('load', startGame);
 window.addEventListener('resize', () => {
 	resizeAll();
 	renderMap(currentLevel);
 });
 window.addEventListener('keydown', (event) => {
 	movePlayerByKey(event.code);
+});
+btnMainMenu.addEventListener('click', () => {
+	mainMenu.style.display = 'none';
+	gameContainer.style.display = 'flex';
+	startGame();
+});
+btnWinnerMenu.addEventListener('click', () => {
+	winnerMenu.style.display = 'none';
+	gameContainer.style.display = 'flex';
+	restartGame();
+});
+btnGameOverMenu.addEventListener('click', () => {
+	gameOverMenu.style.display = 'none';
+	gameContainer.style.display = 'flex';
+	restartGame();
 });
 
 btnUp.addEventListener('click', () => managePlayerMovement(0, -1));
@@ -151,7 +175,7 @@ function managePlayerMovement(cols, rows) {
 		if (currentMap[newPlayerPos.row][newPlayerPos.col] == 'D') {
 			processPlayerFailure();
 		} else if (currentMap[newPlayerPos.row][newPlayerPos.col] == 'G') {
-			processVictory();
+			processPlayerVictory();
 		} else if (currentMap[newPlayerPos.row][newPlayerPos.col] != 'X') {
 			movePlayer(cols, rows);
 		}
@@ -207,22 +231,31 @@ function processPlayerFailure() {
 		lives = maxLives;
 
 		stopUpdatingTime();
-		startGame();
+
+		gameContainer.style.display = 'none';
+		gameOverMenu.style.display = 'grid';
 	}
 }
 
-function processVictory() {
+function processPlayerVictory() {
 	if (isFinalLevel()) {
+		let newRecord = Math.min(time, record);
+
 		if (!record) {
-			setRecord(time);
-			localStorage.setItem(recordKeyName, time);
+			newRecord = parseFloat(time.toFixed(2));
+			setRecord(newRecord);
+			localStorage.setItem(recordKeyName, newRecord);
 		} else {
-			const newRecord = Math.min(time, record);
+			newRecord = parseFloat(Math.min(time, record).toFixed(2));
 			setRecord(newRecord);
 			localStorage.setItem(recordKeyName, newRecord);
 		}
 
 		stopUpdatingTime();
+
+		winnerMenuRecord.innerText = `Your record is ${record}s`;
+		gameContainer.style.display = 'none';
+		winnerMenu.style.display = 'grid';
 	} else {
 		loadNextLevel();
 	}
@@ -285,6 +318,12 @@ function resizeAll() {
 	ctx.font = elementSize + 'px Verdana';
 }
 
+function restartGame() {
+	currentLevel = startingLevel;
+	lives = maxLives;
+	startGame();
+}
+
 function setLives(amount) {
 	lives = amount;
 
@@ -341,5 +380,5 @@ function stopUpdatingTime() {
 
 function updateElapsedTime() {
 	const elapsedTime = Date.now() - startingTime;
-	setTime(convertMilisecondsToSeconds(elapsedTime));
+	setTime(parseFloat(convertMilisecondsToSeconds(elapsedTime).toFixed(2)));
 }
