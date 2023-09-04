@@ -1,8 +1,13 @@
 /* Media queries */
 @media (min-width: 426px) {
+	.game-area {
+		margin-top: 16px;
+	}
+
 	.button-container {
 		justify-content: center;
 		gap: 12px;
+		margin-top: 12px;
 	}
 
 	.control-button {
