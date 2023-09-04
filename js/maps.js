@@ -5,8 +5,6 @@
 
 const emojis = {
 	BOMB_COLLISION: '🔥',
-	GAME_OVER: '😞',
-	WIN: '😋',
 	HEART: '💗',
 	BROKEN_HEART: '💔',
 	TIME: '⏱',
@@ -192,7 +190,7 @@ maps.push(`
   -XXX-XXXX-
   -XXX-XXXX-
   -XXX-XXXD-
-  -XGDXXD---
+  -DGDXXD---
   DD------DD
 `);
 maps.push(`
