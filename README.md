@@ -1,5 +1,5 @@
 # My Precious
-✅ 2D arcade videogame with 10 levels where in each level the player must get his most precious object.
+✅ 2D arcade web game with 10 levels where in each level the player must get his most precious object.
 
 ✅ It was made with HTML, CSS and JavaScript under the Mobile First principle. 
 
